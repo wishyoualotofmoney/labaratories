@@ -11,10 +11,11 @@ struct pipe {
 	bool inRepair;
 
 	bool check() {
-		if (diametrPipe > 0 && lenghtPipe > 0) {
+		if (diametrPipe > 0 && lenghtPipe > 0 ) {
 			return true;
 		}
 		else {
+			cout << "Повторите ввод" << endl;
 			return false;
 		}
 	}
@@ -60,8 +61,15 @@ void addPipe() {
 	cin >> newPipe.lenghtPipe;
 	cout << "В ремонте: ";
 	cin >> newPipe.inRepair;
-	system("cls");
-	cout << "Труба добавлена" << endl;
+	if (!newPipe.check()) {
+		system("cls");
+		cout << "повторите ввод" << endl;
+		addPipe();
+	}
+	else {
+		cout << "Труба добавлена" << endl;
+	}
+
 	showMenu();
 
 
@@ -77,6 +85,8 @@ void addKs() {
 	cin >> newStation.workshop;
 	cout << "Укажите количество активных цехов: ";
 	cin >> newStation.activeWorkshop;
+	cout << "Укажите коэффицент: ";
+	cin >> newStation.efficiency;
 	if (!newStation.check()) {
 		cout << "Ошибка, повторите ввод данных" << endl;
 		addKs();
@@ -119,14 +129,98 @@ void editPipe() {
 void editKs() {
 	system("cls");
 	if (newStation.check()) {
-
+		cout << "Редактирование КС" << endl;
+		cout << "Название КС: " << newStation.name << endl;
+		cout << "Количество цехов: " << newStation.workshop << endl;
+		cout << "Количество активных цехов: " << newStation.activeWorkshop << endl;
+		cout << "Коэффицент: " << newStation.efficiency << endl;
+		cout << "Введите название: ";
+		cin >> newStation.name;
+		cout << "Укажите количество цехов: ";
+		cin >> newStation.workshop;
+		cout << "Укажите количество активных цехов: ";
+		cin >> newStation.activeWorkshop;
+		cout << "Укажите коэффицент: ";
+		cin >> newStation.efficiency;
+		if (newStation.check()) {
+			system("cls");
+			cout << "Успешно" << endl;
+		}
+		else {
+			cout << "Ошибка" << endl;
+		}
 	}
+	else {
+		cout << "КС не сущкествует" << endl;
+	}
+	showMenu();
 	
 }
 
 
 
 
+
+
+
+
+
+int main() {
+	setlocale(LC_ALL, "");
+	int chooseMenu;
+	showMenu();
+	while (true) {
+		cout << "Выберите пункт меню: ";
+		cin >> chooseMenu;
+		switch (chooseMenu)
+		{
+		case 1:
+			
+			addPipe();
+			break;
+
+		case 2:
+			
+			addKs();
+			break;
+
+		case 3:
+			
+			editPipe();
+			break;
+
+		case 4:
+			editKs();
+			break;
+
+		/*case 5: 
+			inf = 0;
+			showObjects();
+			break;
+
+		case 6:
+			inf = 0;
+			loadFromFile();
+			break;
+
+		case 7:
+			inf = 0;
+			safeToFile();
+			break;*/
+			
+		case 8:
+			return 0;
+			break;
+
+		default: 
+			cout << "Повторите ввод" << endl;
+			break;
+
+
+		
+			
+		}
+	}
 
 
 }
