@@ -1,5 +1,6 @@
 ﻿#include <iostream>
 #include <string>
+#include <fstream>
 
 using namespace std;
 
@@ -42,6 +43,7 @@ pipe newPipe;
 station newStation;
 
 void showMenu() {
+	system("cls");
 	cout << "1. Добавить трубу" << endl;
 	cout << "2. Добавить КС" << endl;
 	cout << "3. Редактировать трубу" << endl;
@@ -49,9 +51,8 @@ void showMenu() {
 	cout << "5. Просмотр всех объектов" << endl;
 	cout << "6. Загрузить" << endl;
 	cout << "7. Сохранить" << endl;
-	cout << "8. Выход " << endl;
+	cout << "0. Выход " << endl;
 }
-
 
 void addPipe() {
 	system("cls");
@@ -75,8 +76,6 @@ void addPipe() {
 
 }
 	
-
-
 void addKs() {
 	system ("cls");
 	cout << "Введите название станции: ";
@@ -96,7 +95,6 @@ void addKs() {
 	showMenu();
 
 }
-
 
 void editPipe() {
 	if (newPipe.check()) {
@@ -157,6 +155,78 @@ void editKs() {
 	
 }
 
+void showObjects()
+{
+	system("cls");
+	cout << "Просмотр всех объектов\n\n";
+
+	cout << "Длинна\t" << "Диаметр\t" << "Ремонт\t" << endl;
+	cout << "================================================" << endl;
+	cout << newPipe.lenghtPipe << '\t' << newPipe.diametrPipe << '\t' << newPipe.inRepair << endl;
+
+	cout << "\n";
+
+	cout << "Имя\t" << "countWS\t" << "actWS\t" << "Эффективность\t" << endl;
+	cout << "===========================================================================" << endl;
+	cout << newStation.name << '\t' << newStation.workshop << '\t' << newStation.activeWorkshop << '\t' << newStation.efficiency << endl;
+}
+
+
+
+  
+
+void saveToFile()
+{
+	ofstream fout("Z:\\Documents\\GitHub\\labaratories\\halitovich_AC_21_04\\123.txt");
+	fout << newPipe.lenghtPipe << "/" << newPipe.diametrPipe << "/" << newPipe.inRepair << endl;
+	fout << newStation.name << "/" << newStation.workshop << "/" << newStation.activeWorkshop << "/" << newStation.efficiency << endl;
+	fout.close();
+}
+
+void loadFromFile()
+{
+	ifstream fin("Z:\\Documents\\GitHub\\labaratories\\halitovich_AC_21_04\\123.txt");
+	string buff; //буферная переменная для гетлайн
+	if (!fin.is_open()) // если файл не открыт
+		cout << "Файл не может быть открыт!\n"; // сообщить об этом
+	else
+	{
+		getline(fin, buff, '/');
+		newPipe.lenghtPipe = stoi(buff);
+
+		getline(fin, buff, '/');
+		newPipe.diametrPipe = stoi(buff);
+
+		getline(fin, buff);
+		newPipe.inRepair = stoi(buff);
+
+		getline(fin, newStation.name, '/');
+
+		getline(fin, buff, '/');
+		newStation.workshop = stoi(buff);
+
+		getline(fin, buff, '/');
+		newStation.activeWorkshop = stoi(buff);
+
+		getline(fin, buff);
+		newStation.efficiency = stof(buff);
+
+		fin.close(); // закрываем файл  
+		return;
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -166,21 +236,20 @@ void editKs() {
 
 
 int main() {
-	setlocale(LC_ALL, "");
+	setlocale(LC_CTYPE, "");
 	int chooseMenu;
-	showMenu();
+	
 	while (true) {
+		showMenu();
 		cout << "Выберите пункт меню: ";
 		cin >> chooseMenu;
 		switch (chooseMenu)
 		{
 		case 1:
-			
 			addPipe();
 			break;
 
 		case 2:
-			
 			addKs();
 			break;
 
@@ -193,33 +262,27 @@ int main() {
 			editKs();
 			break;
 
-		/*case 5: 
-			inf = 0;
+		case 5: 
 			showObjects();
 			break;
 
 		case 6:
-			inf = 0;
 			loadFromFile();
 			break;
 
 		case 7:
-			inf = 0;
-			safeToFile();
-			break;*/
+			saveToFile();
+			break;
 			
-		case 8:
+		case 0:
 			return 0;
 			break;
 
 		default: 
 			cout << "Повторите ввод" << endl;
 			break;
-
-
-		
-			
 		}
+		if (chooseMenu != 0) system("pause");
 	}
 
 
