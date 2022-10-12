@@ -6,44 +6,22 @@ using namespace std;
 
 
 
-struct pipe {
+struct Pipe {
 	float diametrPipe;
 	float lenghtPipe;
 	bool inRepair;
-
-	bool check() {
-		if (diametrPipe > 0 && lenghtPipe > 0 ) {
-			return true;
-		}
-		else {
-			cout << "Повторите ввод" << endl;
-			return false;
-		}
-	}
-
 };
 
-struct station {
+struct Station {
 	string name;
 	int workshop;
 	int activeWorkshop;
 	double efficiency;
-
-	bool check() {
-		if (name != "" && activeWorkshop > 0 && workshop > 0) {
-			return true;
-		}
-		else {
-			return false;
-		}
-	}
 };
 
-pipe newPipe;
-station newStation;
+
 
 void showMenu() {
-	system("cls");
 	cout << "1. Добавить трубу" << endl;
 	cout << "2. Добавить КС" << endl;
 	cout << "3. Редактировать трубу" << endl;
@@ -54,191 +32,233 @@ void showMenu() {
 	cout << "0. Выход " << endl;
 }
 
-void addPipe() {
-	system("cls");
-	cout << "Введите диаметр трубы: ";
-	cin >> newPipe.diametrPipe;
-	cout << "Введите длину трубы: ";
-	cin >> newPipe.lenghtPipe;
-	cout << "В ремонте: ";
-	cin >> newPipe.inRepair;
-	if (!newPipe.check()) {
-		system("cls");
-		cout << "повторите ввод" << endl;
-		addPipe();
-	}
-	else {
-		cout << "Труба добавлена" << endl;
-	}
 
-	showMenu();
-
-
+bool validPipe(struct Pipe& pipe) {
+	if (pipe.lenghtPipe > 0) return true;
+	else return false;
 }
+bool validStation(struct Station& station) {
+	if (!station.name.empty()) return true;
+	else return false;
+}
+
+void showObjects(struct Pipe& pipe, struct Station& station)
+{
+	system("cls");
+	cout << "Просмотр всех объектов" << endl;
+	if (validPipe(pipe)) {
+		cout << "Длинна\t" << "Диаметр\t" << "Ремонт\t" << endl;
+		cout << "================================================" << endl;
+		cout << pipe.lenghtPipe << '\t' << pipe.diametrPipe << '\t' << pipe.inRepair << endl;
+
+		cout << "\n";
+	}
+	else cout << "Труба не найдена" << endl;
 	
-void addKs() {
-	system ("cls");
-	cout << "Введите название станции: ";
-	cin >> newStation.name;
-	cout << "Укажите количество цехов: ";
-	cin >> newStation.workshop;
-	cout << "Укажите количество активных цехов: ";
-	cin >> newStation.activeWorkshop;
-	cout << "Укажите коэффицент: ";
-	cin >> newStation.efficiency;
-	if (!newStation.check()) {
-		cout << "Ошибка, повторите ввод данных" << endl;
-		addKs();
+	if (validStation(station)) {
+		cout << "Имя\t" << "Количество цехов\t" << "Количество активных цехов\t" << "Эффективность\t" << endl;
+		cout << "===========================================================================" << endl;
+		cout << station.name << '\t' << station.workshop << '\t' << station.activeWorkshop << '\t' << station.efficiency << endl;
 	}
-	system("cls");
-	cout << " КС добавлена" << endl;
-	showMenu();
-
+	else cout << "Станция не найдена" << endl;
 }
 
-void editPipe() {
-	if (newPipe.check()) {
-		cout << "Редактирование трубы" << endl;
-		cout << "Длина трубы: " << newPipe.lenghtPipe << endl;
-		cout << "Даметр трубы: " << newPipe.diametrPipe << endl;
-		cout << "В ремонте: " << newPipe.inRepair << endl;
-		cout << "Введите длину трубы: ";
-		cin >> newPipe.lenghtPipe;
-		cout << "Введите диаметр трубы: ";
-		cin >> newPipe.diametrPipe;
-		cout << "В ремонте: ";
-		cin >> newPipe.inRepair;
-		if (newPipe.check()) {
-			system("cls");
-			cout << "Успешно" << endl;
+
+
+void editPipe(struct Pipe& pipe) {
+	if (validPipe(pipe)) {
+		cout << "Статус: " << pipe.inRepair << endl;
+		cout << "1. Включить" << endl;
+		cout << "0. Выключить" << endl;
+		bool action;
+		cin >> action;
+		if (action == 0 || action == 1) pipe.inRepair = action;
+		else cout << "Ошибка" << endl;
+	}
+	else cout << "Труба не найдена" << endl;
+}
+
+void editStation(struct Station& station) {
+	int countOn;
+	if (!validStation(station)) {
+		cout << "Ошибка" << endl;
+		return;
+	}
+	int action;
+	cout << "Количество цехов: " << station.workshop << "\nРабочих цехов: " << station.activeWorkshop << "\n0. Отключить\n1. Включить" << endl;
+	cout << "Выберите действие: ";
+	cin >> action;
+	if (action == 1) {
+		cout << "Введите количество цехов для включения: ";
+		cin >> countOn;
+		if ((countOn <= station.workshop - station.activeWorkshop) && countOn > 0) {
+			station.activeWorkshop += countOn;
+		}
+		else {
+			cout << "Ошибка" << endl;
+		}
+	}
+	else if (action == 0) {
+		cout << "Введите количество цехов для выключения: ";
+		cin >> countOn;
+		if (countOn <= station.activeWorkshop && countOn > 0) {
+			station.activeWorkshop -= countOn;
 		}
 		else {
 			cout << "Ошибка" << endl;
 		}
 	}
 	else {
-		cout << "Трубы не существует" << endl;
+		cout << "Попробуйте еще раз" << endl;
 	}
-	showMenu();
-
-
 }
 
-void editKs() {
-	system("cls");
-	if (newStation.check()) {
-		cout << "Редактирование КС" << endl;
-		cout << "Название КС: " << newStation.name << endl;
-		cout << "Количество цехов: " << newStation.workshop << endl;
-		cout << "Количество активных цехов: " << newStation.activeWorkshop << endl;
-		cout << "Коэффицент: " << newStation.efficiency << endl;
-		cout << "Введите название: ";
-		cin >> newStation.name;
-		cout << "Укажите количество цехов: ";
-		cin >> newStation.workshop;
-		cout << "Укажите количество активных цехов: ";
-		cin >> newStation.activeWorkshop;
-		cout << "Укажите коэффицент: ";
-		cin >> newStation.efficiency;
-		if (newStation.check()) {
-			system("cls");
-			cout << "Успешно" << endl;
-		}
-		else {
-			cout << "Ошибка" << endl;
-		}
-	}
-	else {
-		cout << "КС не сущкествует" << endl;
-	}
-	showMenu();
-	
-}
-
-void showObjects()
+void saveToFile(struct Pipe& pipe, struct Station& station)
 {
-	system("cls");
-	cout << "Просмотр всех объектов\n\n";
+	bool pipeCheck, stationCheck;
 
-	cout << "Длинна\t" << "Диаметр\t" << "Ремонт\t" << endl;
-	cout << "================================================" << endl;
-	cout << newPipe.lenghtPipe << '\t' << newPipe.diametrPipe << '\t' << newPipe.inRepair << endl;
+	if (pipe.lenghtPipe != 0)
+		pipeCheck = 1;
+	if (station.name != "")
+		stationCheck = 1;
 
-	cout << "\n";
+	ofstream fout("result.txt");
+	fout << pipeCheck << endl;
+	fout << stationCheck << endl;
 
-	cout << "Имя\t" << "countWS\t" << "actWS\t" << "Эффективность\t" << endl;
-	cout << "===========================================================================" << endl;
-	cout << newStation.name << '\t' << newStation.workshop << '\t' << newStation.activeWorkshop << '\t' << newStation.efficiency << endl;
-}
+	cout <<  pipeCheck << endl;
 
+	if (validPipe(pipe)) {
+		fout << pipe.lenghtPipe << endl;
+		fout << pipe.diametrPipe << endl;
+		fout << pipe.inRepair << endl;
+		cout << "Труба сохранена" << endl;
+	}
 
-
-  
-
-void saveToFile()
-{
-	ofstream fout("Z:\\Documents\\GitHub\\labaratories\\halitovich_AC_21_04\\123.txt");
-	fout << newPipe.lenghtPipe << "/" << newPipe.diametrPipe << "/" << newPipe.inRepair << endl;
-	fout << newStation.name << "/" << newStation.workshop << "/" << newStation.activeWorkshop << "/" << newStation.efficiency << endl;
+	else cout << "Труба не найдена" << endl;
+	if (validStation(station)) {
+		fout << station.name << endl;
+		fout << station.workshop << endl;
+		fout << station.activeWorkshop << endl;
+		fout << station.efficiency << endl;
+		cout << "Станция сохранена" << endl;
+	}
+	else cout << "Станция не найдена" << endl;
 	fout.close();
 }
 
-void loadFromFile()
-{
-	ifstream fin("Z:\\Documents\\GitHub\\labaratories\\halitovich_AC_21_04\\123.txt");
-	string buff; //буферная переменная для гетлайн
-	if (!fin.is_open()) // если файл не открыт
-		cout << "Файл не может быть открыт!\n"; // сообщить об этом
-	else
-	{
-		getline(fin, buff, '/');
-		newPipe.lenghtPipe = stoi(buff);
+void loadFromFile(struct Pipe& pipe, struct Station& station) {
+	ifstream fin;
+	bool pipeCheck = false, stationCheck = false; // признак того что они не нулевые 
+	fin.open("result.txt");
+	if (fin.is_open()) {
+		fin >> pipeCheck;
+		fin >> stationCheck;
+		if (pipeCheck && stationCheck) {
+			fin >> pipe.lenghtPipe;
+			fin >> pipe.diametrPipe;
+			fin >> pipe.inRepair;
+			fin >> ws; // пропускает пустое место 
+			getline(fin, station.name);
+			fin >> station.workshop;
+			fin >> station.activeWorkshop;
+			fin >> station.efficiency;
 
-		getline(fin, buff, '/');
-		newPipe.diametrPipe = stoi(buff);
+			
 
-		getline(fin, buff);
-		newPipe.inRepair = stoi(buff);
+		}
+		if (stationCheck) {
+			fin >> ws;
+			getline(fin, station.name);
+			fin >> station.workshop;
+			fin >> station.activeWorkshop;
+			fin >> station.efficiency;
 
-		getline(fin, newStation.name, '/');
+		}
+		if (pipeCheck) {
+			fin >> pipe.lenghtPipe;
+			fin >> pipe.diametrPipe;
+			fin >> pipe.inRepair;
+		}
 
-		getline(fin, buff, '/');
-		newStation.workshop = stoi(buff);
 
-		getline(fin, buff, '/');
-		newStation.activeWorkshop = stoi(buff);
 
-		getline(fin, buff);
-		newStation.efficiency = stof(buff);
-
-		fin.close(); // закрываем файл  
-		return;
+		if (pipe.lenghtPipe != 0 && pipe.diametrPipe != 0) {
+			cout << "Труба загружена" << endl;
+		}
+		if (station.name != "" && station.workshop != 0 && station.efficiency != 0) {
+			cout << "Станция загружена" << endl;
+		}
+		else
+		{
+			cout << "объекты не загружены" << endl;
+		}
 	}
+	else {
+		cout << "Ошибка открытия файла" << endl;
+	}
+	fin.close();
+
 }
 
+void addPipe(struct Pipe& pipe) {
+	do {
+		cin.clear();
+		cin.ignore(1223, '\n');
+		cout << "Введите длину трубы: ";
+		cin >> pipe.lenghtPipe;
+	} while (pipe.lenghtPipe <= 0 || cin.fail());
+	do {
+		cin.clear();
+		cin.ignore(1223, '\n');
+		cout << "Введие диаметр трубы: ";
+		cin >> pipe.diametrPipe;
+	} while (pipe.diametrPipe <= 0 || cin.fail());
+	do {
+		cin.clear();
+		cin.ignore(1223, '\n');
+		cout << "В ремонте: ";
+		cin >> pipe.inRepair;
+	} while (cin.fail());
+}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+void addStation(struct Station& station) {
+	string name;
+	do {
+		cin.clear();
+		cout << "Введите название станции: ";
+		cin.ignore();
+		getline(cin, name); // получает сin и записывает в name до пробела 
+	} while (cin.fail());
+	station.name = name;
+	do {
+		cin.clear();
+		cin.ignore(1223, '\n');
+		cout << "Введие количество цехов: ";
+		cin >> station.workshop;
+	} while (station.workshop <= 0 || cin.fail());
+	do {
+		cin.clear();
+		cin.ignore(1223, '\n'); // игнорить все что больше числа
+		cout << "Введите количество рабочих цехов: ";
+		cin >> station.activeWorkshop;
+	} while (station.activeWorkshop < 0 || station.activeWorkshop > station.workshop || cin.fail());
+	do {
+		cin.clear();
+		cin.ignore(1223, '\n');
+		cout << "Эффективность: ";
+		cin >> station.efficiency;
+	} while (station.efficiency <= 0 || station.efficiency > 100 || cin.fail());
+}
 
 
 int main() {
 	setlocale(LC_CTYPE, "");
 	int chooseMenu;
-	
+
+	Pipe pipe;
+	Station station;
+
 	while (true) {
 		showMenu();
 		cout << "Выберите пункт меню: ";
@@ -246,32 +266,31 @@ int main() {
 		switch (chooseMenu)
 		{
 		case 1:
-			addPipe();
+			addPipe(pipe);
 			break;
 
 		case 2:
-			addKs();
+			addStation(station);
 			break;
 
 		case 3:
-			
-			editPipe();
+			editPipe(pipe);
 			break;
 
 		case 4:
-			editKs();
+			editStation(station);
 			break;
 
 		case 5: 
-			showObjects();
+			showObjects(pipe, station);
 			break;
 
 		case 6:
-			loadFromFile();
+			loadFromFile(pipe, station);
 			break;
 
 		case 7:
-			saveToFile();
+			saveToFile(pipe, station);
 			break;
 			
 		case 0:
@@ -282,7 +301,6 @@ int main() {
 			cout << "Повторите ввод" << endl;
 			break;
 		}
-		if (chooseMenu != 0) system("pause");
 	}
 
 
