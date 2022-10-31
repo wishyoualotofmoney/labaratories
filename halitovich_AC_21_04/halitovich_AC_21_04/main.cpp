@@ -43,27 +43,40 @@ T GetCorrectNumber(std::string text, T min, T max) {
 	}
 }
 
-void showObjects(struct Pipe& pipe, struct Station& station)
-{
-	system("cls");
-	cout << "Просмотр всех объектов" << endl;
-	if (validPipe(pipe)) {
-		cout << "Длинна\t" << "Диаметр\t" << "Ремонт\t" << endl;
-		cout << "================================================" << endl;
-		cout << pipe.lenghtPipe << '\t' << pipe.diametrPipe << '\t' << pipe.inRepair << endl;
-
-		cout << "\n";
+template <typename T>
+using FilterP = bool(*)(const Pipe& p, T parametr);
+template <typename T>
+vector<unsigned int> findPipeByFilter(unordered_map<unsigned int, Pipe>& pipes, FilterP<T> f, T parametr) {
+	vector<unsigned int> result;
+	for (auto& it : pipes)
+	{
+		if (f(it.second, parametr))
+		{
+			result.push_back(it.second.getId());
+		}
 	}
-	else cout << "Труба не найдена" << endl;
-	
-	if (validStation(station)) {
-		cout << "Имя\t" << "Количество цехов\t" << "Количество активных цехов\t" << "Эффективность\t" << endl;
-		cout << "===========================================================================" << endl;
-		cout << station.name << '\t' << station.workshop << '\t' << station.activeWorkshop << '\t' << station.efficiency << endl;
-	}
-	else cout << "Станция не найдена" << endl;
+	return result;
 }
 
+
+bool checkPipeByInRepair(const Pipe& p, bool parametr) {
+	return p.getInRepair() == parametr;
+}
+
+bool checkPipeByName(const Pipe& p, string parametr) {
+	return p.getName() == parametr;
+}
+
+
+ostream& operator << (ostream& out, Pipe& p) {
+	out << endl << "Труба" << endl << "Имя: " << p.getName() << endl
+		<< "ID: " << p.getId() << endl
+		<< "Длина: " << p.getLength() << endl
+		<< "Диаметр: " << p.getDiametr() << endl
+		<< ((p.getInRepair()) ? "В работе " : "Не в работе") << endl;
+
+	return out;
+}
 
 
 void editPipe(struct Pipe& pipe) {
