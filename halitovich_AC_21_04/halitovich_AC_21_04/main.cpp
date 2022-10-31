@@ -1,6 +1,7 @@
-﻿#include <iostream>
-#include <string>
-#include <fstream>
+﻿#include <unordered_map>
+#include <vector>
+#include "Pipe.h"
+#include "Station.h"
 
 using namespace std;
 
@@ -20,26 +21,26 @@ struct Station {
 };
 
 
-
-void showMenu() {
-	cout << "1. Добавить трубу" << endl;
-	cout << "2. Добавить КС" << endl;
-	cout << "3. Редактировать трубу" << endl;
-	cout << "4. Редактировать КС" << endl;
-	cout << "5. Просмотр всех объектов" << endl;
-	cout << "6. Загрузить" << endl;
-	cout << "7. Сохранить" << endl;
-	cout << "0. Выход " << endl;
+void clearBuffer() {
+	cin.clear();
+	cin.ignore(1024, '\n');
 }
 
-
-bool validPipe(struct Pipe& pipe) {
-	if (pipe.lenghtPipe > 0) return true;
-	else return false;
-}
-bool validStation(struct Station& station) {
-	if (!station.name.empty()) return true;
-	else return false;
+template <typename T>
+T GetCorrectNumber(std::string text, T min, T max) {
+	cout << text;
+	T number;
+	cin >> number;
+	for (;;) {
+		if (cin.fail() || number < min || number > max) {
+			clearBuffer();
+			cout << "Введите корректные данные(" << min << "-" << max << "): ";
+			cin >> number;
+		}
+		else {
+			return number;
+		}
+	}
 }
 
 void showObjects(struct Pipe& pipe, struct Station& station)

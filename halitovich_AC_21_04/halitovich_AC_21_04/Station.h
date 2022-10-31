@@ -17,10 +17,12 @@ public:
     int getWorkdhop() const;
     int getWorkshopInWork() const;
     float getEfficiency() const;
+    unsigned int getId() const;
 
     void setName(std::string name);
     void setWorkshop(int workshop);
     void setWorkshopInWork(int workshopInWork);
     void setEfficiency(float efficiency);
-    static int id;
+    void setId();
+    static int idS;
 };
