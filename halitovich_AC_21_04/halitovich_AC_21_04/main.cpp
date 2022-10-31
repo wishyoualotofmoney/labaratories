@@ -7,18 +7,7 @@ using namespace std;
 
 
 
-struct Pipe {
-	float diametrPipe;
-	float lenghtPipe;
-	bool inRepair;
-};
 
-struct Station {
-	string name;
-	int workshop;
-	int activeWorkshop;
-	double efficiency;
-};
 
 
 void clearBuffer() {
@@ -59,6 +48,7 @@ vector<unsigned int> findPipeByFilter(unordered_map<unsigned int, Pipe>& pipes, 
 }
 
 
+
 bool checkPipeByInRepair(const Pipe& p, bool parametr) {
 	return p.getInRepair() == parametr;
 }
@@ -77,6 +67,52 @@ ostream& operator << (ostream& out, Pipe& p) {
 
 	return out;
 }
+
+
+
+
+
+
+ostream& operator << (ostream& out, Pipe& p) {
+	out << endl << "Труба" << endl << "Имя: " << p.getName() << endl
+		<< "ID: " << p.getId() << endl
+		<< "Длина: " << p.getLength() << endl
+		<< "Диаметр: " << p.getDiametr() << endl
+		<< ((p.getInRepair()) ? "В работе " : "Не в работе") << endl;
+
+	return out;
+}
+
+
+istream& operator >> (istream& in, Pipe& p) {
+	string name;
+	clearBuffer();
+	cout << "Имя трубы: ";
+	getline(cin, name);
+	p.setName(name);
+	p.setLength(GetCorrectNumber("Длина: ", 0.00001, 3.4E+38));
+	p.setDiametr(GetCorrectNumber("Диаметр: ", 0.00001, 3.4E+38));
+	p.setInRepair(GetCorrectNumber("В работе: ", 0, 1));
+	p.idP++;
+	p.setId();
+	return in;
+}
+
+
+ostream& operator << (ostream& out, Station& s) {
+	out << endl << "Компрессорная Станция" << endl << "Имя: " << s.getName() << endl
+		<< "ID: " << s.getId() << endl
+		<< "Количество цехоы: " << s.getWorkshop() << endl
+		<< "Количество цехов в работе: " << s.getWorkshopInWork() << endl
+		<< "Эффективность: " << s.getEfficiency() << endl;
+
+	return out;
+}
+
+
+
+
+
 
 
 void editPipe(struct Pipe& pipe) {
